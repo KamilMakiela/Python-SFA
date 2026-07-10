@@ -9,4 +9,4 @@ Included SFA models:
 - panel normal-half-normal (nhn)
 - panel Gaussian model (random effects, RE)
 
-Estimation availabe for maximum likelihood and Bayesian inference. See 'example_script' for details. 
+The SFA codes provided here are translations from a larger MATLAB SF-BMA project. More will come in due time. For now, estimation is availabe for single model based on maximum likelihood and Bayesian inference. Basically two modules: sfa2 and ineefficiencies (module sfa is without the summary See 'example_script' for details. 
