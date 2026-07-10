@@ -148,7 +148,7 @@ class SFAResults(SimpleNamespace):
             output['bayes'] = bayes_table
 
         print('=' * width)
-        print('NOTE: to get (in)efficiency scores run "inefficiencies" module')
+        print('NOTE: to get (in)efficiency scores run "inefficiency" module')
 
         return output
 
