@@ -44,7 +44,6 @@ X = np.asarray(data.iloc[:,1:], dtype=float)
 # NOTE: I suggest using dec_crit=1 with if_mdd=1, otherwise mdd is 
 #   approximated using BIC, which is likely not that accurate.
 
-
 model  = sfa2.fit(X, y, my_n, T=my_T, sfa_opt=sf_op, dec_crit=1, if_mdd=1)
 model.summary();
 
