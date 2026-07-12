@@ -20,16 +20,16 @@ def jondrow(model, X, y):
         'nhnp' : panel normal-half-normal
     """
     if model.name == "nex":
-        return eff_nex_a(model.params_ml, X, y)
+        return eff_nex_a(model.theta_ml, X, y)
 
     elif model.name == "nhn":
-        return eff_nhn_a(model.params_ml, X, y)
+        return eff_nhn_a(model.theta_ml, X, y)
 
     elif model.name == "nexp":
-        return eff_nexP_a(model.params_ml, X, y, model.n, model.T)
+        return eff_nexP_a(model.theta_ml, X, y, model.n, model.T)
 
     elif model.name == "nhnp":
-        return eff_nhnP_a(model.params_ml,X, y, model.n, model.T)
+        return eff_nhnP_a(model.theta_ml,X, y, model.n, model.T)
     
     else:
         return 0.0, 1.0
