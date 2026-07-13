@@ -30,7 +30,7 @@ sf_op = 1;     # normal-expnential
 
 data = pd.read_excel('Produc.xlsx', header=0, sheet_name='m1')
 y = np.asarray(data.iloc[:,3], dtype=float).reshape(-1)
-X = np.asarray(data.iloc[:,4:], dtype=float)
+X = np.asarray(data.iloc[:, 4:], dtype=float)
 
 # to run the fit() method below you need at least:
 #   X - independent variables (including the constant term)
@@ -52,15 +52,16 @@ X = np.asarray(data.iloc[:,4:], dtype=float)
 #   approximated using BIC, which is likely not that accurate.
 # NOTE: if you use non-panel (pooled) models on panel data I suggest 
 #   setting n as the total number of datapoints and T=1
-my_n=48
-my_T=17
+my_n=816
+my_T=1
 
 print('Example based on Produc dataset available in R (plm package)')
 model  = sfa2.fit(X, y, my_n, T=my_T, sfa_opt=sf_op, dec_crit=1, if_mdd=1)
 model.summary();
 
 # this part is fairly automated, just provide the fitted model and the data
-u, te = inefficiency.jondrow(model, X, y)
+# set bayes=1 to use bayesian estimates, zero (or nothing) otheriwse
+u, te = inefficiency.jondrow(model, X, y, bayes=1)
 
 
 

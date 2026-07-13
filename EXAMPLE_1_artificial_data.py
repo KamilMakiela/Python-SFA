@@ -49,7 +49,8 @@ model  = sfa2.fit(X, y, my_n, T=my_T, sfa_opt=sf_op, dec_crit=1, if_mdd=1)
 model.summary();
 
 # this part is fairly automated, just provide the fitted model and the data
-u1, te1 = inefficiency.jondrow(model, X, y)
+# set bayes=1 to use bayesian estimates, zero (or nothing) otheriwse
+u, te = inefficiency.jondrow(model, X, y, bayes=0)
 
 
 

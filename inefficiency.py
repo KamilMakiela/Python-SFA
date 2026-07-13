@@ -9,7 +9,7 @@ import numpy as np
 from scipy.special import log_ndtr
 
 
-def jondrow(model, X, y):
+def jondrow(model, X, y, bayes=0):
     """
     Calculate inefficiency and technical-efficiency estimates.
 
@@ -19,17 +19,22 @@ def jondrow(model, X, y):
         'nexp' : panel normal-exponential
         'nhnp' : panel normal-half-normal
     """
+    if bayes == 1:
+        theta = model.bayes.theta_post
+    else:
+        theta = model.theta_ml
+        
     if model.name == "nex":
-        return eff_nex_a(model.theta_ml, X, y)
+        return eff_nex_a(theta, X, y)
 
     elif model.name == "nhn":
-        return eff_nhn_a(model.theta_ml, X, y)
+        return eff_nhn_a(theta, X, y)
 
     elif model.name == "nexp":
-        return eff_nexP_a(model.theta_ml, X, y, model.n, model.T)
+        return eff_nexP_a(theta, X, y, model.n, model.T)
 
     elif model.name == "nhnp":
-        return eff_nhnP_a(model.theta_ml,X, y, model.n, model.T)
+        return eff_nhnP_a(theta,X, y, model.n, model.T)
     
     else:
         return 0.0, 1.0
