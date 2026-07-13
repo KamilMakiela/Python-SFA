@@ -28,7 +28,7 @@ The following models are currently implemented:
 
 ## Project Background
 
-The Python implementation is based on a code developed for a larger MATLAB project on stochastic frontier Bayesian model averaging. The current package focuses primarily on single-model estimation. Additional model-search and Bayesian model-averaging procedures will added in future versions.
+The Python implementation is based on a code developed for a larger MATLAB project on stochastic frontier Bayesian model averaging. See Makieła (2026) for details (reference below). The current package focuses primarily on a single-model estimation. Additional model-search and Bayesian model-averaging procedures will added in future versions.
 
 ## Main Modules
 
@@ -241,8 +241,10 @@ for a complete example based on simulated data, including data preparation, mode
 
 ## Development Status
 
-This package is under active development. The current implementation is based on a broader MATLAB stochastic-frontier and Bayesian model-averaging project, and further models and model-search procedures may be added in future releases.
+This package is under development. The current implementation is based on a broader MATLAB project for stochastic frontier and Bayesian model averaging. Additional features and model-search procedures will be added in future releases.
 
-References
+## References
+
 Jondrow, J., Knox Lovell, C.A., Materov, I.S. and Schmidt, P. (1982), “On the estimation of technical inefficiency in the stochastic frontier production function model”, Journal of Econometrics, Vol. 19 No. 2–3, pp. 233–238, doi: 10.1016/0304-4076(82)90004-5.
 
+Makieła, K. (2026). Model uncertainty under non-Gaussian errors: Bayesian model averaging and selection in stochastic frontier models. Forthcoming.
