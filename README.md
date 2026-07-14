@@ -229,7 +229,7 @@ A typical workflow:
 3. retain the preferred specification;
 4. calculate inefficiency and technical efficiency scores for that model.
 
-## Usage Examples
+## Example
 
 ```Python
 # once me have 'model' we can estimate (in)effciency scores as
@@ -239,14 +239,14 @@ beyes = 1    # scores based on Bayesian estimate
 u, ef = inefficiency.jondrow(model, X, y, bayes)
 ```
 
-See the comments in:
+## Other examples
+
+For complete examples with simulated and real data, including data preparation, model estimation, result summary(), efficiency-score calculation and more comments, see:
 
 ```text
 EXAMPLE_1_artificial_data
 EXAMPLE_2_produc
 ```
-
-for a complete example based on simulated data, including data preparation, model estimation, result reporting, and efficiency-score calculation.
 
 ## Development Status
 
