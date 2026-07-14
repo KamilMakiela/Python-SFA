@@ -189,6 +189,19 @@ dec_crit = 0
 if_mdd = 0
 ```
 
+## Efficiency Estimation
+
+Efficiency and inefficiency scores are computed separately using the functions provided in the `inefficiency` module. For now, the algorithm is an implementation of a well-known Jondrow et al. (1982) estimator. 
+
+This separation avoids unnecessary runtime when competing frontier specifications need to be first estimated and compared.
+
+A typical workflow:
+
+1. estimate several candidate stochastic frontier models;
+2. compare them using BIC or integrated likelihood;
+3. retain the preferred specification;
+4. calculate inefficiency and technical efficiency scores for that model.
+
 ## Example
 
 ```python
@@ -214,34 +227,16 @@ if_mdd = 1
 model = fit(X, y, n, T, sfa_opt, dec_crit, if_mdd)
 model.summary()
 
-```
-
-## Efficiency Estimation
-
-Efficiency and inefficiency scores are computed separately using the functions provided in the `inefficiency` module. For now, the algorithm is an implementation of a well-known Jondrow et al. (1982) estimator. 
-
-This separation avoids unnecessary runtime when competing frontier specifications need to be first estimated and compared.
-
-A typical workflow:
-
-1. estimate several candidate stochastic frontier models;
-2. compare them using BIC or integrated likelihood;
-3. retain the preferred specification;
-4. calculate inefficiency and technical efficiency scores for that model.
-
-## Example
-
-```Python
-# once me have 'model' we can estimate (in)effciency scores as
+# once me have the 'model' we can estimate (in)effciency scores as
 # bayes = 0  # scores based on ML
 beyes = 1    # scores based on Bayesian estimate
 
-u, ef = inefficiency.jondrow(model, X, y, bayes)
+u, te = inefficiency.jondrow(model, X, y, bayes)
 ```
 
 ## Other examples
 
-For complete examples with simulated and real data, including data preparation, model estimation, result summary(), efficiency-score calculation and more comments, see:
+For complete examples with simulated and real data, including data preparation, model estimation, results summary(), efficiency-score calculation and more comments, see:
 
 ```text
 EXAMPLE_1_artificial_data
