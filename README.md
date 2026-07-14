@@ -167,7 +167,7 @@ Controls whether Bayesian calculations and the marginal data density are compute
 if_mdd = 1
 ```
 
-enables Bayesian inference and integrated-likelihood calculations.
+enables Bayesian inference and integrated likelihood calculations.
 
 ```python
 if_mdd = 0
@@ -213,6 +213,10 @@ if_mdd = 1
 
 model = fit(X, y, n, T, sfa_opt, dec_crit, if_mdd)
 model.summary()
+
+# later we can estimate (in)effciency scores as
+beyes = 1
+u, ef = inefficiency.jondrow(model, X, y, bayes)
 ```
 
 ## Efficiency Estimation
