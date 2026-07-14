@@ -214,9 +214,6 @@ if_mdd = 1
 model = fit(X, y, n, T, sfa_opt, dec_crit, if_mdd)
 model.summary()
 
-# later we can estimate (in)effciency scores as
-beyes = 1
-u, ef = inefficiency.jondrow(model, X, y, bayes)
 ```
 
 ## Efficiency Estimation
@@ -233,6 +230,14 @@ A typical workflow:
 4. calculate inefficiency and technical efficiency scores for that model.
 
 ## Usage Examples
+
+```Python
+# once me have 'model' we can estimate (in)effciency scores as
+# bayes = 0  # scores based on ML
+beyes = 1    # scores based on Bayesian estimate
+
+u, ef = inefficiency.jondrow(model, X, y, bayes)
+```
 
 See the comments in:
 
