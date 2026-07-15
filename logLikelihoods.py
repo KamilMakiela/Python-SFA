@@ -23,11 +23,7 @@ def lgl_kmnrl(theta, X, y):
 
     e = y - X @ beta
 
-    L = (
-        -0.5 * n * np.log(2.0 * np.pi)
-        - n * lsv
-        - (e @ e) / (2.0 * s2v)
-    )
+    L = ( -0.5 * n * np.log(2.0 * np.pi) - n * lsv - (e @ e) / (2.0 * s2v) )
 
     g_beta = X.T @ e / s2v
     g_lsv = -n + (e @ e) / s2v
@@ -87,14 +83,8 @@ def nlgl_nex_b(theta, X, y):
     logPhi = np.zeros_like(a)
 
     idxPhi = a < -10.0
-    logPhi[idxPhi] = (
-        np.log(0.5)
-        + np.log(erfcx(-a[idxPhi] / np.sqrt(2.0)))
-        - 0.5 * a[idxPhi] ** 2
-    )
-    logPhi[~idxPhi] = np.log(
-        0.5 * erfc(-a[~idxPhi] / np.sqrt(2.0))
-    )
+    logPhi[idxPhi] = ( np.log(0.5) + np.log(erfcx(-a[idxPhi] / np.sqrt(2.0))) - 0.5 * a[idxPhi] ** 2 )
+    logPhi[~idxPhi] = np.log( 0.5 * erfc(-a[~idxPhi] / np.sqrt(2.0)) )
 
     logphi = -0.5 * a**2 - 0.5 * np.log(2.0 * np.pi)
 
@@ -102,7 +92,6 @@ def nlgl_nex_b(theta, X, y):
     logdelta = logphi - logPhi
 
     delta = np.zeros_like(a)
-
     idx = a < -10.0
     delta[~idx] = np.exp(np.minimum(logdelta[~idx], np.log(1e12)))
 
@@ -115,12 +104,7 @@ def nlgl_nex_b(theta, X, y):
     delta = np.minimum(delta, 1e14)
 
     # LOG-LIKELIHOOD
-    loglik_i = (
-        -np.log(s_u)
-        + 0.5 * (s_v**2) / (s_u**2)
-        + e / s_u
-        + logPhi
-    )
+    loglik_i = ( -np.log(s_u) + 0.5 * (s_v**2) / (s_u**2) + e / s_u + logPhi)
 
     nL = -np.sum(loglik_i)
 
@@ -135,12 +119,7 @@ def nlgl_nex_b(theta, X, y):
 
     d_sv = s_v / (s_u**2) + delta * da_dsv
 
-    d_su = (
-        -1.0 / s_u
-        - e / (s_u**2)
-        - (s_v**2) / (s_u**3)
-        + delta * da_dsu
-    )
+    d_su = ( -1.0 / s_u - e / (s_u**2) - (s_v**2) / (s_u**3) + delta * da_dsu )
 
     # Chain rule to sigma2 and gamma
     dsu_dsigma2 = gamma / (2.0 * s_u)
@@ -195,22 +174,11 @@ def lgl_nex_a(theta, X, y):
 
     idx = a < -10.0
 
-    logPhi[idx] = (
-        np.log(0.5)
-        + np.log(erfcx(-a[idx] / np.sqrt(2.0)))
-        - 0.5 * a[idx] ** 2
-    )
+    logPhi[idx] = ( np.log(0.5) + np.log(erfcx(-a[idx] / np.sqrt(2.0))) - 0.5 * a[idx] ** 2 )
 
-    logPhi[~idx] = np.log(
-        0.5 * erfc(-a[~idx] / np.sqrt(2.0))
-    )
+    logPhi[~idx] = np.log( 0.5 * erfc(-a[~idx] / np.sqrt(2.0)) )
 
-    L = (
-        -n * np.log(s_u)
-        + 0.5 * n * (s_v**2) / (s_u**2)
-        + np.sum(e) / s_u
-        + np.sum(logPhi)
-    )
+    L = ( -n * np.log(s_u) + 0.5 * n * (s_v**2) / (s_u**2) + np.sum(e) / s_u + np.sum(logPhi) )
 
     return L
 
