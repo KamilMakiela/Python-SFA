@@ -62,11 +62,7 @@ def eff_nex_a(theta, X, y):
 
     delta = np.exp(log_phi - log_Phi)
 
-    u_hat = (
-        -residual
-        - s_v**2 / s_u
-        + s_v * delta
-    )
+    u_hat = (-residual - s_v**2 / s_u + s_v * delta)
 
     TE_hat = np.exp(-u_hat)
 
@@ -170,16 +166,9 @@ def eff_nexP_a(theta, X, y, n, T):
 
     # Exact truncated-normal moment:
     # E(exp(-u_i) | e_i)
-    log_numerator_Phi = log_ndtr(
-        (mu - sig2) / sig
-    )
+    log_numerator_Phi = log_ndtr((mu - sig2) / sig)
 
-    TE_hat = np.exp(
-        -mu
-        + 0.5 * sig2
-        + log_numerator_Phi
-        - log_Phi_z
-    )
+    TE_hat = np.exp(-mu + 0.5 * sig2 + log_numerator_Phi - log_Phi_z)
 
     return u_hat, TE_hat
 
@@ -245,15 +234,8 @@ def eff_nhnP_a(theta, X, y, n, T):
 
     # Exact truncated-normal moment:
     # E(exp(-u_i) | e_i)
-    log_numerator_Phi = log_ndtr(
-        (mu - sig2) / sig
-    )
+    log_numerator_Phi = log_ndtr((mu - sig2) / sig)
 
-    TE_hat = np.exp(
-        -mu
-        + 0.5 * sig2
-        + log_numerator_Phi
-        - log_Phi_z
-    )
+    TE_hat = np.exp(-mu + 0.5 * sig2 + log_numerator_Phi - log_Phi_z)
 
     return u_hat, TE_hat
