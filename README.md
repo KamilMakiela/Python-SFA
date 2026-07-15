@@ -249,6 +249,6 @@ This package is under development. The current implementation is based on a broa
 
 ## References
 
-Jondrow, J., Knox Lovell, C.A., Materov, I.S. and Schmidt, P. (1982), “On the estimation of technical inefficiency in the stochastic frontier production function model”, Journal of Econometrics, Vol. 19 No. 2–3, pp. 233–238, doi: 10.1016/0304-4076(82)90004-5.
+Jondrow, J., Knox Lovell, C.A., Materov, I.S. and Schmidt, P. (1982), "On the estimation of technical inefficiency in the stochastic frontier production function model", Journal of Econometrics, Vol. 19 No. 2–3, pp. 233–238, doi: 10.1016/0304-4076(82)90004-5.
 
-Makieła, K. (2026). Model uncertainty under non-Gaussian errors: Bayesian model averaging and selection in stochastic frontier models. Forthcoming.
+Makieła, K. (2026). "Model uncertainty under non-Gaussian errors: Bayesian Model Averaging and Selection in Stochastic Frontier Models". Available at arXive.
