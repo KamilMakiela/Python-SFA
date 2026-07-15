@@ -231,12 +231,14 @@ def nlgl_nhn_b(theta, X, y):
     sigma2 = np.exp(log_sigma2)
 
     # Stable logistic transformation
-    if eta >= 0:
-        gamma = 1.0 / (1.0 + np.exp(-eta))
-    else:
-        eeta = np.exp(eta)
-        gamma = eeta / (1.0 + eeta)
-
+    #old
+    #if eta >= 0:
+    #    gamma = 1.0 / (1.0 + np.exp(-eta))
+    #else:
+    #    eeta = np.exp(eta)
+    #    gamma = eeta / (1.0 + eeta)
+        
+    gamma = expit(eta)
     gamma = np.clip(gamma, 1e-12, 1.0 - 1e-12)
 
     s_u = np.sqrt(gamma * sigma2)
@@ -257,15 +259,9 @@ def nlgl_nhn_b(theta, X, y):
     logPhi_w = np.empty_like(w)
 
     idxPhi = w < -10
-    logPhi_w[idxPhi] = (
-        np.log(0.5)
-        + np.log(erfcx(-w[idxPhi] / np.sqrt(2.0)))
-        - 0.5 * w[idxPhi] ** 2
-    )
+    logPhi_w[idxPhi] = ( np.log(0.5) + np.log(erfcx(-w[idxPhi] / np.sqrt(2.0))) - 0.5 * w[idxPhi] ** 2 )
 
-    logPhi_w[~idxPhi] = np.log(
-        0.5 * erfc(-w[~idxPhi] / np.sqrt(2.0))
-    )
+    logPhi_w[~idxPhi] = np.log( 0.5 * erfc(-w[~idxPhi] / np.sqrt(2.0)) )
 
     # LOG-LIKELIHOOD
     loglik = np.sum(
@@ -373,15 +369,8 @@ def lgl_nhn_a(theta, X, y):
 
     idx = a < -10
 
-    logPhi[idx] = (
-        np.log(0.5)
-        + np.log(erfcx(-a[idx] / np.sqrt(2.0)))
-        - 0.5 * a[idx] ** 2
-    )
-
-    logPhi[~idx] = np.log(
-        0.5 * erfc(-a[~idx] / np.sqrt(2.0))
-    )
+    logPhi[idx] = ( np.log(0.5) + np.log(erfcx(-a[idx] / np.sqrt(2.0))) - 0.5 * a[idx] ** 2 )
+    logPhi[~idx] = np.log(0.5 * erfc(-a[~idx] / np.sqrt(2.0)))
 
     L = (
         -0.5 * n * np.log(np.pi / 2.0)
@@ -438,11 +427,7 @@ def nlgl_nexP_b(theta, X, y, n, T):
     sigma2 = np.exp(log_sigma2)
 
     # Stable logistic transformation
-    gamma = np.clip(
-        expit(eta),
-        1.0e-12,
-        1.0 - 1.0e-12,
-    )
+    gamma = np.clip(expit(eta), 1.0e-12, 1.0 - 1.0e-12,)
 
     sigma2_u = gamma * sigma2
     sigma2_v = (1.0 - gamma) * sigma2
@@ -466,20 +451,14 @@ def nlgl_nexP_b(theta, X, y, n, T):
     X_mean = np.mean(X_panel, axis=0)
 
     # Unit-specific means of e_it * x_itj
-    EX_mean = np.mean(
-        residual_panel[:, :, None] * X_panel,
-        axis=0,
-    )
+    EX_mean = np.mean( residual_panel[:, :, None] * X_panel, axis=0)
 
     c = sigma2_v / (T * sigma_u)
     B = residual_mean + c
 
     sqrt_T = np.sqrt(T)
 
-    a = (
-        -sqrt_T * residual_mean / sigma_v
-        - sigma_v / (sqrt_T * sigma_u)
-    )
+    a = (-sqrt_T * residual_mean / sigma_v - sigma_v / (sqrt_T * sigma_u))
 
     # Stable log(Phi(a))
     log_Phi = log_ndtr(a)
@@ -491,21 +470,14 @@ def nlgl_nexP_b(theta, X, y, n, T):
         - 0.5 * n * np.log(T)
     )
 
-    L2 = (
-        -T
-        / (2.0 * sigma2_v)
-        * np.sum(residual_ss / T - B**2)
-    )
+    L2 = ( -T / (2.0 * sigma2_v) * np.sum(residual_ss / T - B**2) )
 
     L3 = np.sum(log_Phi)
 
     nL = float(-(L1 + L2 + L3))
 
     # Stable inverse Mills ratio: phi(a) / Phi(a)
-    log_phi = (
-        -0.5 * a**2
-        - 0.5 * np.log(2.0 * np.pi)
-    )
+    log_phi = ( -0.5 * a**2 - 0.5 * np.log(2.0 * np.pi) )
 
     log_delta = log_phi - log_Phi
 
@@ -513,67 +485,36 @@ def nlgl_nexP_b(theta, X, y, n, T):
 
     tail = a < -10.0
 
-    delta[~tail] = np.exp(
-        np.minimum(
-            log_delta[~tail],
-            np.log(1.0e12),
-        )
-    )
+    delta[~tail] = np.exp( np.minimum( log_delta[~tail], np.log(1.0e12)) )
 
     aa = a[tail]
 
-    delta[tail] = (
-        -aa
-        - 1.0 / aa
-        + 2.0 / aa**3
-    )
+    delta[tail] = ( -aa - 1.0 / aa + 2.0 / aa**3 )
 
     delta[~np.isfinite(delta)] = 1.0e12
     delta = np.minimum(delta, 1.0e14)
 
     # Gradient with respect to beta
     grad_beta = np.sum(
-        (T / sigma2_v)
-        * (
-            EX_mean
-            - B[:, None] * X_mean
-        )
-        + (sqrt_T / sigma_v)
-        * delta[:, None]
-        * X_mean,
+        ( T / sigma2_v) * ( EX_mean - B[:, None] * X_mean )
+        + (sqrt_T / sigma_v) * delta[:, None] * X_mean,
         axis=0,
     )
 
     d = residual_ss / T - B**2
 
-    dL_dsigma2_v = np.sum(
-        T * d / (2.0 * sigma2_v**2)
-        + B / (sigma2_v * sigma_u)
-    )
+    dL_dsigma2_v = np.sum( T * d / (2.0 * sigma2_v**2) + B / (sigma2_v * sigma_u) )
 
     dL_dsigma_v = (
         2.0 * sigma_v * dL_dsigma2_v
         - n * (T - 1) / sigma_v
-        + np.sum(
-            delta
-            * (
-                sqrt_T
-                * residual_mean
-                / sigma_v**2
-                - 1.0
-                / (sqrt_T * sigma_u)
-            )
-        )
+        + np.sum(delta * ( sqrt_T * residual_mean / sigma_v**2 - 1.0 / (sqrt_T * sigma_u)))
     )
 
     dL_dsigma_u = (
         -n / sigma_u
         - np.sum(B / sigma_u**2)
-        + np.sum(
-            delta
-            * sigma_v
-            / (sqrt_T * sigma_u**2)
-        )
+        + np.sum(delta * sigma_v / (sqrt_T * sigma_u**2))
     )
 
     # Chain rule for log(sigma^2)
@@ -582,11 +523,7 @@ def nlgl_nexP_b(theta, X, y, n, T):
 
     # Chain rule for eta = logit(gamma)
     dsigma_v_deta = -0.5 * sigma_v * gamma
-    dsigma_u_deta = (
-        0.5
-        * sigma_u
-        * (1.0 - gamma)
-    )
+    dsigma_u_deta = (0.5 * sigma_u * (1.0 - gamma) )
 
     grad_log_sigma2 = (
         dL_dsigma_v
@@ -595,20 +532,9 @@ def nlgl_nexP_b(theta, X, y, n, T):
         * dsigma_u_dlog_sigma2
     )
 
-    grad_eta = (
-        dL_dsigma_v * dsigma_v_deta
-        + dL_dsigma_u * dsigma_u_deta
-    )
+    grad_eta = ( dL_dsigma_v * dsigma_v_deta + dL_dsigma_u * dsigma_u_deta )
 
-    gradient = -np.concatenate(
-        (
-            grad_beta,
-            np.array([
-                grad_log_sigma2,
-                grad_eta,
-            ]),
-        )
-    )
+    gradient = -np.concatenate((grad_beta, np.array([ grad_log_sigma2, grad_eta ])))
 
     return nL, gradient
 
@@ -692,16 +618,9 @@ def lgl_nexP_a(theta, X, y, n, T):
 
     adjusted_mean = residual_mean + s2v / (T * s_u)
 
-    arg2 = (
-        -T
-        / (2.0 * s2v)
-        * np.sum(residual_ss / T - adjusted_mean**2)
-    )
+    arg2 = ( -T / (2.0 * s2v) * np.sum(residual_ss / T - adjusted_mean**2) )
 
-    a = (
-        -np.sqrt(T) * residual_mean / s_v
-        - s_v / (np.sqrt(T) * s_u)
-    )
+    a = (-np.sqrt(T) * residual_mean / s_v - s_v / (np.sqrt(T) * s_u) )
 
     # Numerically stable log(Phi(a)).
     arg3 = np.sum(log_ndtr(a))
@@ -738,11 +657,7 @@ def nlgl_nhnP_b(theta, X, y, n, T):
 
     sigma2 = np.exp(log_sigma2)
 
-    gamma = np.clip(
-        expit(eta),
-        1e-12,
-        1.0 - 1e-12,
-    )
+    gamma = np.clip(expit(eta), 1e-12, 1.0 - 1e-12)
 
     s2u = gamma * sigma2
     s2v = (1.0 - gamma) * sigma2
@@ -790,20 +705,11 @@ def nlgl_nhnP_b(theta, X, y, n, T):
 
     tail = z < -10.0
 
-    delta[~tail] = np.exp(
-        np.minimum(
-            log_delta[~tail],
-            np.log(1e12),
-        )
-    )
+    delta[~tail] = np.exp(np.minimum(log_delta[~tail], np.log(1e12)))
 
     zz = z[tail]
 
-    delta[tail] = (
-        -zz
-        - 1.0 / zz
-        + 2.0 / zz**3
-    )
+    delta[tail] = (-zz - 1.0 / zz + 2.0 / zz**3)
 
     delta[~np.isfinite(delta)] = 1e12
     delta = np.minimum(delta, 1e14)
@@ -814,28 +720,14 @@ def nlgl_nhnP_b(theta, X, y, n, T):
 
     X_sum = np.sum(X_panel, axis=0)
 
-    EX_sum = np.sum(
-        residual_panel[:, :, None] * X_panel,
-        axis=0,
-    )
+    EX_sum = np.sum(residual_panel[:, :, None] * X_panel, axis=0)
 
     c = s_u / (s_v * np.sqrt(D))
 
-    grad_beta = np.sum(
-        (
-            EX_sum
-            - a * r[:, None] * X_sum
-        )
-        / s2v
-        + delta[:, None] * c * X_sum,
-        axis=0,
-    )
+    grad_beta = np.sum((EX_sum - a * r[:, None] * X_sum ) / s2v + delta[:, None] * c * X_sum, axis=0)
 
     # Derivatives with respect to s2v and s2u
-    dz_ds2v = z * (
-        -0.5 / s2v
-        - 0.5 / D
-    )
+    dz_ds2v = z * (-0.5 / s2v - 0.5 / D)
 
     dz_ds2u = z * (
         0.5 / s2u
