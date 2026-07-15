@@ -64,9 +64,15 @@ def nlgl_nex_b(theta, X, y):
     # TRANSFORMS
     sigma2 = np.exp(log_sigma2)
 
-    gamma = expit(eta)
-    gamma = np.clip(gamma, 1e-12, 1.0 - 1e-12)
+        # Stable logistic transformation
+    if eta >= 0:
+        gamma = 1.0 / (1.0 + np.exp(-eta))
+    else:
+        eeta = np.exp(eta)
+        gamma = eeta / (1.0 + eeta)
 
+    gamma = np.clip(gamma, 1e-12, 1.0 - 1e-12)
+    
     s_u = np.sqrt(gamma * sigma2)
     s_v = np.sqrt((1.0 - gamma) * sigma2)
 
