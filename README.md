@@ -1,6 +1,6 @@
 # Stochastic Frontier Analysis
 
-A Python package for estimating cross-sectional and panel-data stochastic frontier models using maximum-likelihood and Bayesian methods.
+A Python package for estimating cross-sectional and panel data stochastic frontier models using maximum likelihood and Bayesian methods.
 
 ## Features
 
@@ -11,13 +11,13 @@ The package currently supports:
 - cross-sectional normal-half-normal stochastic frontier models;
 - panel normal-exponential stochastic frontier models;
 - panel normal-half-normal stochastic frontier models;
-- panel Gaussian random-effects models;
-- maximum-likelihood estimation;
-- Bayesian posterior estimation;
-- marginal data density calculations;
-- technical inefficiency and efficiency estimation.
+- panel random-effects models;
+- maximum likelihood estimation;
+- Bayesian estimation;
+- marginal data density calculations (aka integrated likelihood);
+- inefficiency and efficiency estimation.
 
-The current release focuses on estimating individual stochastic frontier models. Model-search and Bayesian model-averaging procedures may be added in future versions.
+The current release focuses on estimating individual stochastic frontier models. Model search and Bayesian model averaging procedures will be added in future versions.
 
 ## Installation
 
@@ -46,7 +46,7 @@ Although the distribution name is `stochastic-frontier-analysis`, the Python imp
 The main public modules are:
 
 - `sf_model` — model estimation and presentation of estimation results;
-- `inefficiency` — estimation of inefficiency and technical-efficiency scores.
+- `inefficiency` — estimation of inefficiency and efficiency scores.
 
 They can be imported with:
 
@@ -54,7 +54,7 @@ They can be imported with:
 from sfa import sf_model, inefficiency
 ```
 
-The estimation and efficiency calculations are kept separate. This allows users to estimate and compare alternative model specifications before computing efficiency scores for the preferred model.
+Model and efficiency estimation is kept separate. This allows users to estimate and compare alternative SF specifications before computing efficiency scores for the preferred model, which may be quite demanding.
 
 ## Available Models
 
@@ -69,7 +69,7 @@ The argument `sfa_opt` selects the model specification:
 | `4` | Panel normal-half-normal stochastic frontier |
 | `5` | Panel Gaussian random-effects model |
 
-## Estimating a Model
+## Model Estimation
 
 The main estimation function is:
 
@@ -77,11 +77,11 @@ The main estimation function is:
 model = sf_model.fit(X, y, n, T, sfa_opt, dec_crit, if_mdd)
 ```
 
-It returns a results object containing parameter estimates, standard errors, model-fit measures, and other diagnostics.
+It returns a results object containing parameter estimates, standard errors, model fit measures, and other diagnostics.
 
 Depending on the selected options, the returned object may include:
 
-- maximum-likelihood estimates;
+- maximum likelihood estimates;
 - Bayesian posterior estimates;
 - Akaike information criterion;
 - Bayesian information criterion;
@@ -105,7 +105,7 @@ Because `summary()` prints the results directly, it should not be wrapped in `pr
 
 The regressor matrix.
 
-When an intercept is required, `X` must already contain a column of ones. It is recommended to place the intercept in the first column:
+As the intercept is required, `X` must already contain a column of ones. It is recommended to place the intercept column as the first column:
 
 ```python
 X = np.column_stack((np.ones(len(y)), regressors))
@@ -119,7 +119,7 @@ The dependent variable. Its observations must be ordered consistently with the r
 
 The number of cross-sectional units.
 
-For a cross-sectional model, this usually equals the total number of observations. For a panel model, it is the number of units.
+For a cross-sectional model, this usually equals the total number of observations. For a panel model, it is the number of units.  
 
 ### `T`
 
@@ -166,13 +166,13 @@ Controls whether Bayesian calculations and the marginal data density are compute
 if_mdd = 1
 ```
 
-enables Bayesian inference and marginal data density calculations.
+enables Bayesian estimates and marginal data density calculations.
 
 ```python
 if_mdd = 0
 ```
 
-uses maximum-likelihood estimation without calculating the marginal data density.
+uses maximum likelihood estimation without calculating the marginal data density.
 
 For a fully Bayesian analysis:
 
@@ -181,7 +181,7 @@ dec_crit = 1
 if_mdd = 1
 ```
 
-For faster estimation based on BIC:
+For a faster estimation based on BIC:
 
 ```python
 dec_crit = 0
@@ -224,11 +224,11 @@ Set:
 bayes = 0
 ```
 
-to calculate scores using the maximum-likelihood estimates.
+to estimate scores using the maximum likelihood.
 
 ## Example data
 
-Example scripts and datasets are stored in the `examples` directory. Just copy-paste them (with data folder) into your working directory and run there, or run them directly from the package directory. 
+Example scripts and datasets are stored in the `examples` directory on GitHub. Just copy-paste them (with the data folder) into your working directory and run there. 
 
 A portable way to load an Excel file from `examples/data` is:
 
@@ -245,7 +245,7 @@ This works on Windows, macOS, and Linux.
 
 ## Complete Examples
 
-The repository includes complete examples based on simulated and empirical data, including data preparation, model estimation, result summaries, and efficiency-score calculations.
+The repository on GitHub includes complete examples based on simulated and empirical data, including data preparation, model estimation, result summaries, and (in)efficiency scores estimation.
 
 See the files in:
 
@@ -253,9 +253,9 @@ See the files in:
 examples/
 ```
 
-## Project Background
+## Project Background and development status
 
-This Python implementation is based on code developed for a broader MATLAB project on stochastic frontier Bayesian model averaging. The MATLAB implementation includes the full model-search and Bayesian model-averaging procedures, whereas this Python package currently focuses on single-model estimation.
+This Python implementation is based on code developed for a broader MATLAB project on Bayesian model averaging in SFA. The MATLAB implementation includes the model search and Bayesian model averaging procedures, whereas this Python package currently focuses on a single-model estimation.
 
 MATLAB package:
 
@@ -269,12 +269,8 @@ Python package:
 https://github.com/KamilMakiela/Python-SFA
 ```
 
-## Development Status
-
-The package is under active development. The current version supports individual cross-sectional and panel stochastic frontier models. Additional model-search and Bayesian model-averaging procedures may be introduced in future releases.
-
 ## References
 
-Jondrow, J., Lovell, C. A. K., Materov, I. S., and Schmidt, P. (1982). On the estimation of technical inefficiency in the stochastic frontier production function model. *Journal of Econometrics, 19*(2–3), 233–238. https://doi.org/10.1016/0304-4076(82)90004-5
+Jondrow, J., Lovell, C. A. K., Materov, I. S., and Schmidt, P. (1982). "*On the estimation of technical inefficiency in the stochastic frontier production function model*". Journal of Econometrics, 19(2–3), 233–238. https://doi.org/10.1016/0304-4076(82)90004-5
 
-Makieła, K. (2026). *Model uncertainty under non-Gaussian errors: Bayesian model averaging and selection in stochastic frontier models*. Available on arXiv.
+Makieła, K. (2026). "*Model uncertainty under non-Gaussian errors: Bayesian model averaging and selection in stochastic frontier models*". Available on arXiv.
