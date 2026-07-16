@@ -255,7 +255,7 @@ examples/
 
 ## Project Background and development status
 
-This Python implementation is based on code developed for a broader MATLAB project on Bayesian model averaging in SFA. The MATLAB implementation includes the model search and Bayesian model averaging procedures, whereas this Python package currently focuses on a single-model estimation.
+This Python implementation is based on code developed for a broader MATLAB project on Bayesian model averaging in SFA. The MATLAB implementation includes the model search and Bayesian model averaging procedures, whereas this Python package currently focuses on a single-model estimation. The porject is under development. 
 
 MATLAB package:
 
