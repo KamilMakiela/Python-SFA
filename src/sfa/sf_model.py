@@ -13,11 +13,11 @@ from types import SimpleNamespace
 from scipy.special import expit
 
 #internal modules
-from logLikelihoods import lgl_kmnrl, nlgl_nex_b, nlgl_nhn_b, nlgl_nexP_b, nlgl_nhnP_b, nlgl_re_b
-from posteriors import nlgMAP_kmnrl, lgMAP_kmnrl, nlgMAP_nex_b, lgMAP_nex_a, nlgMAP_nhn_b, lgMAP_nhn_a
-from posteriors import nlgMAP_nexP_b, lgMAP_nexP_a, nlgMAP_nhnP_b, lgMAP_nhnP_a, nlgMAP_re_b, lgMAP_re_a
-from priors import prior_hes_kmnrl, prior_hes_nex_a, prior_hes_nhn_a, prior_hes_re_a
-from scores import scores_kmnrl, scores_nex_a, scores_nhn_a, scores_nexP_a, scores_nhnP_a, scores_re_a
+from .logLikelihoods import lgl_kmnrl, nlgl_nex_b, nlgl_nhn_b, nlgl_nexP_b, nlgl_nhnP_b, nlgl_re_b
+from .posteriors import nlgMAP_kmnrl, lgMAP_kmnrl, nlgMAP_nex_b, lgMAP_nex_a, nlgMAP_nhn_b, lgMAP_nhn_a
+from .posteriors import nlgMAP_nexP_b, lgMAP_nexP_a, nlgMAP_nhnP_b, lgMAP_nhnP_a, nlgMAP_re_b, lgMAP_re_a
+from .priors import prior_hes_kmnrl, prior_hes_nex_a, prior_hes_nhn_a, prior_hes_re_a
+from .scores import scores_kmnrl, scores_nex_a, scores_nhn_a, scores_nexP_a, scores_nhnP_a, scores_re_a
 
 class SFAResults(SimpleNamespace):
     """Container for the results returned by :func:`fit`."""
@@ -42,22 +42,12 @@ class SFAResults(SimpleNamespace):
         critical_value = norm.ppf(1.0 - alpha / 2.0)
         tail = 100.0 * alpha / 2.0
 
-        names = getattr(
-            self,
-            'param_names',
-            [f"param_{i}" for i in range(len(self.params_ml))],
-        )
+        names = getattr(self, 'param_names', [f"param_{i}" for i in range(len(self.params_ml))],)
 
         n_scale = 1 if self.name == 'cnlrm' else 2
         scale_idx = np.arange(len(self.params_ml) - n_scale, len(self.params_ml))
 
-        def make_table(
-            estimates,
-            dispersion,
-            theta,
-            theta_dispersion,
-            dispersion_label,
-        ):
+        def make_table(estimates, dispersion, theta, theta_dispersion, dispersion_label,):
             estimates = np.asarray(estimates)
             dispersion = np.asarray(dispersion)
             theta = np.asarray(theta)
@@ -68,32 +58,12 @@ class SFAResults(SimpleNamespace):
 
             # Scale parameters are stored as exp(log scale). Construct
             # intervals on the log scale and exponentiate the endpoints.
-            lower[scale_idx] = np.exp(
-                theta[scale_idx]
-                - critical_value * theta_dispersion[scale_idx]
-            )
-            upper[scale_idx] = np.exp(
-                theta[scale_idx]
-                + critical_value * theta_dispersion[scale_idx]
-            )
+            lower[scale_idx] = np.exp(theta[scale_idx] - critical_value * theta_dispersion[scale_idx])
+            upper[scale_idx] = np.exp(theta[scale_idx] + critical_value * theta_dispersion[scale_idx])
 
-            return pd.DataFrame(
-                {
-                    'Estimate': estimates,
-                    dispersion_label: dispersion,
-                    f'{tail:.1f}%': lower,
-                    f'{100.0 - tail:.1f}%': upper,
-                },
-                index=names,
-            )
+            return pd.DataFrame({'Estimate': estimates, dispersion_label: dispersion, f'{tail:.1f}%': lower, f'{100.0 - tail:.1f}%': upper,}, index=names,)
 
-        ml_table = make_table(
-            self.params_ml,
-            self.params_ml_se,
-            self.theta_ml,
-            self.theta_ml_se,
-            'Std. Error',
-        )
+        ml_table = make_table(self.params_ml, self.params_ml_se, self.theta_ml, self.theta_ml_se, 'Std. Error',)
 
         model_labels = {
             'cnlrm': 'Classical normal linear regression',
@@ -127,13 +97,7 @@ class SFAResults(SimpleNamespace):
         output = {'ml': ml_table}
 
         if hasattr(self, 'bayes'):
-            bayes_table = make_table(
-                self.bayes.param_post,
-                self.bayes.param_post_se,
-                self.bayes.theta_post,
-                self.bayes.theta_post_se,
-                'Post. SD',
-            )
+            bayes_table = make_table(self.bayes.param_post, self.bayes.param_post_se, self.bayes.theta_post, self.bayes.theta_post_se, 'Post. SD',)
 
             print('=' * width)
             print('Bayesian Results')
@@ -248,17 +212,7 @@ def fit(X, y, n, T=1, sfa_opt=1, dec_crit=0, if_mdd=0):
         raise ValueError('Unknown sfa_opt.')
 
     if sfa_opt != 0:
-        res = minimize(
-            funopt,
-            theta_start,
-            method='BFGS',
-            jac=True,
-            options={
-                'maxiter': 5000,
-                'gtol': 1e-12,
-                'disp': False,
-            },
-        )
+        res = minimize(funopt, theta_start, method='BFGS', jac=True, options={'maxiter': 5000, 'gtol': 1e-12, 'disp': False,},)
 
         theta_l_max = res.x
         l_max = -res.fun
@@ -269,10 +223,7 @@ def fit(X, y, n, T=1, sfa_opt=1, dec_crit=0, if_mdd=0):
         model.function_evaluations = getattr(res, 'nfev', None)
 
         theta_l_max_a = theta_l_max.copy()
-        theta_l_max_a[-2], theta_l_max_a[-1] = sv_su_from_sigma_gamma(
-            theta_l_max_a[-2],
-            theta_l_max_a[-1],
-        )
+        theta_l_max_a[-2], theta_l_max_a[-1] = sv_su_from_sigma_gamma(theta_l_max_a[-2], theta_l_max_a[-1],)
 
         G_lik = scores(theta_l_max_a)
         hes = G_lik.T @ G_lik
@@ -289,30 +240,15 @@ def fit(X, y, n, T=1, sfa_opt=1, dec_crit=0, if_mdd=0):
         theta_l_max_hlp[-1] = np.clip(theta_l_max[-1], -2.197224577, 2.197224577)
 
         try:
-            res_post = minimize(
-                funopt_post,
-                theta_l_max_hlp,
-                method='BFGS',
-                jac=True,
-                options={'maxiter': 5000, 'gtol': 1e-12, 'disp': False},
-            )
+            res_post = minimize(funopt_post, theta_l_max_hlp, method='BFGS', jac=True, options={'maxiter': 5000, 'gtol': 1e-12, 'disp': False},)
         except Exception:
-            res_post = minimize(
-                funopt_post,
-                theta_start,
-                method='BFGS',
-                jac=True,
-                options={'maxiter': 5000, 'gtol': 1e-12, 'disp': False},
-            )
+            res_post = minimize(funopt_post, theta_start, method='BFGS', jac=True, options={'maxiter': 5000, 'gtol': 1e-12, 'disp': False},)
 
         theta_p_max = res_post.x
 
         theta_p_a = theta_p_max.copy()
         if sfa_opt != 0:
-            theta_p_a[-2], theta_p_a[-1] = sv_su_from_sigma_gamma(
-                theta_p_max[-2],
-                theta_p_max[-1],
-            )
+            theta_p_a[-2], theta_p_a[-1] = sv_su_from_sigma_gamma(theta_p_max[-2], theta_p_max[-1],)
 
         p_max_a = fun_MAP_a(theta_p_a)
 
@@ -366,27 +302,20 @@ def fit(X, y, n, T=1, sfa_opt=1, dec_crit=0, if_mdd=0):
     model.params_ml_se = model.theta_ml_se.copy()
 
     model.params_ml[sig_idx] = np.exp(theta_l_max_a[sig_idx])
-    model.params_ml_se[sig_idx] = (
-        model.params_ml[sig_idx] * model.theta_ml_se[sig_idx]
-    )
+    model.params_ml_se[sig_idx] = (model.params_ml[sig_idx] * model.theta_ml_se[sig_idx])
     if if_mdd == 1:
         model.bayes = SimpleNamespace()
 
         model.bayes.theta_Var_post = inv_spd_chol_upper(hes_a)
 
         model.bayes.theta_post = theta_p_a
-        model.bayes.theta_post_se = np.sqrt(
-            np.diag(model.bayes.theta_Var_post)
-        )
+        model.bayes.theta_post_se = np.sqrt(np.diag(model.bayes.theta_Var_post))
 
         model.bayes.param_post = theta_p_a.copy()
         model.bayes.param_post_se = model.bayes.theta_post_se.copy()
 
         model.bayes.param_post[sig_idx] = np.exp(theta_p_a[sig_idx])
-        model.bayes.param_post_se[sig_idx] = (
-            model.bayes.param_post[sig_idx]
-            * model.bayes.theta_post_se[sig_idx]
-        )
+        model.bayes.param_post_se[sig_idx] = (model.bayes.param_post[sig_idx] * model.bayes.theta_post_se[sig_idx])
 
     return model
 

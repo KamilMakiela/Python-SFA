@@ -1,0 +1,25 @@
+# Virtual environments
+package_env/
+package_test/
+.venv/
+venv/
+
+# Build output
+build/
+dist/
+*.egg-info/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Spyder
+.spyproject/
+.spyderproject
+
+# Windows
+Thumbs.db
+Desktop.ini
