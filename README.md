@@ -226,7 +226,7 @@ bayes = 0
 
 to calculate scores using the maximum-likelihood estimates.
 
-## Example scripts
+## Example data
 
 Example scripts and datasets are stored in the `examples` directory. Just copy-paste them (with data folder) into your working directory and run there, or run them directly from the package directory. 
 
