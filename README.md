@@ -1,4 +1,4 @@
-# Stochastic Frontier Analysis
+# Python-SFA: Stochastic Frontier Analysis
 
 A Python package for estimating cross-sectional and panel data stochastic frontier models using maximum likelihood and Bayesian methods.
 
